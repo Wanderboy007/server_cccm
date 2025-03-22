@@ -1,17 +1,26 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
+import dotenv from 'dotenv';
+import connectDB from './utils/db';
+import authRoutes from './routes/authRoute';  
+
+const PORT = process.env.PORT || 5000;
+
+
+dotenv.config();
 
 const app = express();
-const PORT = 3000;
 
-// Middleware to parse JSON
+// Middleware
 app.use(express.json());
 
-// Basic route
-app.get('/', (req: Request, res: Response) => {
-    res.send('Hello, World!');
-});
+// Routes
+app.use('/api/auth', authRoutes);
 
-// Start the server
+// Connect to MongoDB
+connectDB(); 
+
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
+ 
+export default app;

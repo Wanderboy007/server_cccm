@@ -1,0 +1,62 @@
+import { Request, Response } from 'express';
+import User from '../models/User';
+import { hashPassword, comparePassword } from '../utils/auth'; 
+import { generateToken } from '../utils/jwt';
+
+
+export const register = async (req: Request, res: Response) => {
+  const { name, email, password, role, year } = req.body;
+
+  try {
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      res.status(400).json({ message: 'User already exists' });
+      return;
+    }
+    
+
+    if(role === 'super_admin' || role === 'admin') {
+      res.status(400).json({ message: 'Invalid role for this route' });
+      return;
+    }
+
+    // Hash password
+    const hashedPassword = await hashPassword(password);
+
+    // Create new user
+    const user = new User({ name, email, password: hashedPassword, role, year });
+    await user.save();
+     res.status(201).json({ user });
+  } catch (error) {
+     res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+
+
+
+export const login = async (req: Request, res: Response): Promise<void> => {
+  const { email, password } = req.body;
+
+  try {
+    // Check if user exists
+    const user = await User.findOne({ email }) as { _id: string, password: string };
+    if (!user) {
+       res.status(400).json({ message: 'Invalid credentials' });
+    }
+
+    // Compare passwords
+    const isMatch = await comparePassword(password, user.password);
+    if (!isMatch) {
+       res.status(400).json({ message: 'Invalid credentials' });
+    }
+
+    // Generate JWT
+    const token = generateToken(user._id.toString());
+
+     res.status(200).json({ token, user });
+  } catch (error) {
+     res.status(500).json({ message: 'Server error', error });
+  }
+};

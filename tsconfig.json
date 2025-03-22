@@ -1,32 +1,27 @@
 {
   "compilerOptions": {
-    /* Basic Options */
-    "target": "ES2022", // Modern JavaScript features
+    "target": "ES2022",
     "module": "ESNext", // Use ESM (or "CommonJS" if needed)
-    "moduleResolution": "node", // Resolve modules like Node.js
+    "moduleResolution": "node",
     "outDir": "./dist", // Output directory for compiled files
     "rootDir": "./src", // Source directory
-    "strict": true, // Enable all strict type-checking options
-    "esModuleInterop": true, // Enable ES module interoperability
-    "skipLibCheck": true, // Skip type-checking of library files (faster builds)
-    "forceConsistentCasingInFileNames": true, // Ensure consistent file casing
-
-    /* Advanced Options */
-    "allowJs": true, // Allow importing JavaScript files
-    "checkJs": true, // Type-check JavaScript files
-    "resolveJsonModule": true, // Allow importing JSON files
-    "isolatedModules": true, // Ensure each file can be transpiled independently
-    "noEmitOnError": true, // Don't emit files if there are type errors
-    "removeComments": true, // Remove comments in the output
-    "sourceMap": true, // Generate source maps for debugging
-    "inlineSources": true, // Include source content in source maps
-
-    /* Linting and Code Quality */
-    "noUnusedLocals": true, // Error on unused local variables
-    "noUnusedParameters": true, // Error on unused function parameters
-    "noImplicitReturns": true, // Error if not all code paths return a value
-    "noFallthroughCasesInSwitch": true // Error on fallthrough in switch cases
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": true,
+    "checkJs": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true, // Required for ts-jest
+    "noEmitOnError": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "inlineSources": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*"], // Include all files in the src directory
+  "include": ["src/**/*", "__tests__/**/*"], // Include all files in src and __tests__
   "exclude": ["node_modules", "dist", "**/*.test.ts"] // Exclude unnecessary files
 }
