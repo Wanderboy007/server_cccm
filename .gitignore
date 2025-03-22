@@ -48,6 +48,7 @@ jspm_packages/
 # Build files
 build/
 out/
+dist/
 
 # Debug files
 *.debug

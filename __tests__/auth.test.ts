@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../src/app';
+import {app,server} from '../src/app';
 import User from '../src/models/User';
 import mongoose from 'mongoose';
 
@@ -12,11 +12,12 @@ describe('Auth Routes', () => {
   afterAll(async () => {
     // Disconnect from the test database
     await mongoose.connection.close();
+    await server.close();
   });
 
   afterEach(async () => {
     // Clear the users collection after each test
-    await User.deleteMany({});
+    await User.deleteMany({ email: { $ne: 'superadmin@example.com' } });
   });
 
   describe('POST /api/auth/register', () => {
@@ -91,73 +92,73 @@ describe('Auth Routes', () => {
   
   });
 
-  // describe('POST /api/auth/register/admin', () => {
-  //   let superAdminToken: string;
+  describe('POST /api/auth/register/admin', () => {
+    let superAdminToken: string;
   
-  //   beforeAll(async () => {
-  //     // Create a super admin for testing
-  //     const superAdmin = new User({
-  //       name: 'Super Admin',
-  //       email: 'superadmin@example.com',
-  //       password: 'hashed_password',
-  //       role: 'super_admin',
-  //     });
-  //     await superAdmin.save();
+    beforeAll(async () => {
+      // Create a super admin for testing
+      // const superAdmin = new User({
+      //   name: 'Super Admin',
+      //   email: 'superadmin@example.com',
+      //   password: 'hashed_password',
+      //   role: 'super_admin',
+      // });
+      // await superAdmin.save();
   
-  //     // Log in as super admin to get a token
-  //     const res = await request(app)
-  //       .post('/api/auth/login')
-  //       .send({
-  //         email: 'superadmin@example.com',
-  //         password: 'superadmin123',
-  //       });
+      // Log in as super admin to get a token
+      const res = await request(app)
+        .post('/api/auth/login')
+        .send({
+          email: 'superadmin@example.com',
+          password: 'superadmin123',
+        });
   
-  //     superAdminToken = res.body.token;
-  //   });
+      superAdminToken = res.body.token;
+    });
   
-  //   it('should create a new admin (as super admin)', async () => {
-  //     const res = await request(app)
-  //       .post('/api/auth/register/admin')
-  //       .set('Authorization', `Bearer ${superAdminToken}`)
-  //       .send({
-  //         name: 'Admin User',
-  //         email: 'admin@example.com',
-  //         password: 'password123',
-  //         role: 'admin',
-  //       });
+    it('should create a new admin (as super admin)', async () => {
+      const res = await request(app)
+        .post('/api/auth/register/admin')
+        .set('Authorization', `Bearer ${superAdminToken}`)
+        .send({
+          name: 'Admin User',
+          email: 'admin@example.com',
+          password: 'password123',
+          role: 'admin',
+        });
   
-  //     expect(res.status).toBe(201);
-  //     expect(res.body.user).toHaveProperty('_id');
-  //     expect(res.body.user.role).toBe('admin');
-  //   });
+      expect(res.status).toBe(201);
+      expect(res.body.user).toHaveProperty('_id');
+      expect(res.body.user.role).toBe('admin');
+    });
   
-  //   it('should not allow creating an admin without super admin privileges', async () => {
-  //     const res = await request(app)
-  //       .post('/api/auth/register/admin')
-  //       .send({
-  //         name: 'Admin User',
-  //         email: 'admin@example.com',
-  //         password: 'password123',
-  //         role: 'admin',
-  //       });
+    it('should not allow creating an admin without super admin privileges', async () => {
+      const res = await request(app)
+        .post('/api/auth/register/admin')
+        .send({
+          name: 'Admin User',
+          email: 'admin@example.com',
+          password: 'password123',
+          role: 'admin',
+        });
   
-  //     expect(res.status).toBe(401);
-  //     expect(res.body.message).toBe('No token, authorization denied');
-  //   });
+      expect(res.status).toBe(401);
+      expect(res.body.message).toBe('No token, authorization denied');
+    });
   
-  //   it('should not allow creating a super admin without super admin privileges', async () => {
-  //     const res = await request(app)
-  //       .post('/api/auth/register/admin')
-  //       .set('Authorization', `Bearer ${superAdminToken}`)
-  //       .send({
-  //         name: 'Another Super Admin',
-  //         email: 'anothersuperadmin@example.com',
-  //         password: 'password123',
-  //         role: 'super_admin',
-  //       });
+    it('should not allow creating a super admin', async () => {
+      const res = await request(app)
+        .post('/api/auth/register/admin')
+        .set('Authorization', `Bearer ${superAdminToken}`)
+        .send({
+          name: 'Another Super Admin',
+          email: 'anothersuperadmin@example.com',
+          password: 'password123',
+          role: 'super_admin',
+        });
   
-  //     expect(res.status).toBe(403);
-  //     expect(res.body.message).toBe('Unauthorized: Only super admins can create admin users');
-  //   });
-  // });
+      expect(res.status).toBe(403);
+      expect(res.body.message).toBe('Unauthorized: Only super admins can create admin users');
+    });
+  });
 });

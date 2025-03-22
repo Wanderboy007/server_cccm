@@ -34,6 +34,50 @@ export const register = async (req: Request, res: Response) => {
 };
 
 
+export const registerAdmin = async (req: Request, res: Response) : Promise<void> => {
+  const { name, email, password, role } = req.body;
+
+  try {
+    // Check if the requesting user is a super admin 
+
+    if (role === 'super_admin') {
+      res.status(403).json({ message: 'Unauthorized: Only super admins can create admin users' });
+      return;
+    }
+
+
+    if (req.user?.role !== 'super_admin') {
+      res.status(403).json({ message: 'Unauthorized: Only super admins can create admin users' });
+      return;
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      res.status(400).json({ message: 'User already exists' });
+      return;
+    }
+
+    // Validate role (only allow 'admin' or 'super_admin')
+    if (role !== 'admin' && role !== 'super_admin') {
+      res.status(400).json({ message: 'Invalid role for admin registration' });
+      return;
+    }
+
+    // Hash password
+    const hashedPassword = await hashPassword(password);
+
+    // Create new admin user
+    const user = new User({ name, email, password: hashedPassword, role });
+    await user.save();
+
+    res.status(201).json({ user });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+
 
 
 export const login = async (req: Request, res: Response): Promise<void> => {
@@ -41,22 +85,28 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
   try {
     // Check if user exists
+    // console.log(email);
     const user = await User.findOne({ email }) as { _id: string, password: string };
-    if (!user) {
+    if (!user) { 
        res.status(400).json({ message: 'Invalid credentials' });
+       return;
     }
 
     // Compare passwords
     const isMatch = await comparePassword(password, user.password);
     if (!isMatch) {
        res.status(400).json({ message: 'Invalid credentials' });
+       return;
     }
 
     // Generate JWT
     const token = generateToken(user._id.toString());
 
      res.status(200).json({ token, user });
-  } catch (error) {
+  } catch (error) { 
+    console.log(error)
      res.status(500).json({ message: 'Server error', error });
   }
-};
+}; 
+
+
