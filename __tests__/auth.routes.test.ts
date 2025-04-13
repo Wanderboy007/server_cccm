@@ -1,10 +1,10 @@
 import request from 'supertest';
-import {app,server} from '../src/app';
-import User from '../src/models/User';
+import {app} from '../src/app';
+import User from '../src/models/User.model';
 import mongoose from 'mongoose';
 
 describe('Auth Routes', () => {
-  beforeAll(async () => {
+  beforeAll(async () => { 
     // Connect to the test database
     await mongoose.connect(process.env.MONGO_URI!);
   });
@@ -12,12 +12,16 @@ describe('Auth Routes', () => {
   afterAll(async () => {
     // Disconnect from the test database
     await mongoose.connection.close();
-    await server.close();
   });
 
   afterEach(async () => {
     // Clear the users collection after each test
-    await User.deleteMany({ email: { $ne: 'superadmin@example.com' } });
+    await User.deleteMany({
+      email: {
+        $nin: ['superadmin@example.com', 'student@example.com', 'admin@example.com'],
+      },
+    });
+    
   });
 
   describe('POST /api/auth/register', () => {
@@ -81,7 +85,7 @@ describe('Auth Routes', () => {
         .post('/api/auth/register')
         .send({
           name: 'Admin User',
-          email: 'admin@example.com',
+          email: 'admin3@example.com',
           password: 'password123',
           role: 'admin',
         });
@@ -122,11 +126,10 @@ describe('Auth Routes', () => {
         .set('Authorization', `Bearer ${superAdminToken}`)
         .send({
           name: 'Admin User',
-          email: 'admin@example.com',
+          email: 'admin78@example.com',
           password: 'password123',
           role: 'admin',
         });
-  
       expect(res.status).toBe(201);
       expect(res.body.user).toHaveProperty('_id');
       expect(res.body.user.role).toBe('admin');
@@ -158,7 +161,7 @@ describe('Auth Routes', () => {
         });
   
       expect(res.status).toBe(403);
-      expect(res.body.message).toBe('Unauthorized: Only super admins can create admin users');
+      expect(res.body.message).toBe('Unauthorized: Only super admins can not be created');
     });
   });
 });

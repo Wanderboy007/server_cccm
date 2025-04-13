@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import User from '../models/User';
+import User from '../models/User.model';
 import { hashPassword, comparePassword } from '../utils/auth'; 
 import { generateToken } from '../utils/jwt';
 
@@ -41,10 +41,10 @@ export const registerAdmin = async (req: Request, res: Response) : Promise<void>
     // Check if the requesting user is a super admin 
 
     if (role === 'super_admin') {
-      res.status(403).json({ message: 'Unauthorized: Only super admins can create admin users' });
+      res.status(403).json({ message: 'Unauthorized: Only super admins can not be created' });
       return;
     }
-
+    console.log("wrong")
 
     if (req.user?.role !== 'super_admin') {
       res.status(403).json({ message: 'Unauthorized: Only super admins can create admin users' });
