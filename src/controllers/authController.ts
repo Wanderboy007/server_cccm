@@ -80,33 +80,43 @@ export const registerAdmin = async (req: Request, res: Response) : Promise<void>
 
 
 
+
+
 export const login = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
 
   try {
     // Check if user exists
-    // console.log(email);
     const user = await User.findOne({ email }) as { _id: string, password: string };
-    if (!user) { 
-       res.status(400).json({ message: 'Invalid credentials' });
-       return;
+    if (!user) {
+      res.status(400).json({ message: 'Invalid credentials' });
+      return;
     }
 
     // Compare passwords
     const isMatch = await comparePassword(password, user.password);
     if (!isMatch) {
-       res.status(400).json({ message: 'Invalid credentials' });
-       return;
+      res.status(400).json({ message: 'Invalid credentials' });
+      return;
     }
 
     // Generate JWT
     const token = generateToken(user._id.toString());
 
-     res.status(200).json({ token, user });
-  } catch (error) { 
-    console.log(error)
-     res.status(500).json({ message: 'Server error', error });
+    // Set cookie with the token
+    res.cookie('authToken', token, {
+      httpOnly: true,         // Makes the cookie inaccessible to JavaScript (important for security)
+      maxAge: 24 * 60 * 60 * 1000, // 1 day expiration
+    });
+
+    // Respond with user data (optional, you can decide what to send back)
+    res.status(200).json({ message: 'Login successful', user });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Server error', error });
   }
-}; 
+};
+
 
 
