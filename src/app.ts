@@ -5,7 +5,7 @@ import authRoutes from './routes/auth.route';
 import eventRoute from './routes/event.route'
 import cors from 'cors';
 
-const PORT = process.env.TEST_PORT || 5000;
+// const PORT = process.env.TEST_PORT || 5000;
 
 
 dotenv.config();

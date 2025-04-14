@@ -84,6 +84,7 @@ export const listEvents = async (req: Request, res: Response) => {
       sortBy,
       sortOrder = 'asc',
       limit,
+      page = 1, // Default to page 1 if not specified
     } = req.query;
 
     // Build the filter object
@@ -105,6 +106,9 @@ export const listEvents = async (req: Request, res: Response) => {
       if (dateTo) filter.date.$lte = new Date(dateTo as string);
     }
 
+    // Count total documents matching the filter (for pagination info)
+    const totalEvents = await Event.countDocuments(filter);
+
     // Build the query
     let query = Event.find(filter).populate('organizer', 'name email');
 
@@ -118,15 +122,30 @@ export const listEvents = async (req: Request, res: Response) => {
       query = query.sort({ date: -1 });
     }
 
-    // Limit
-    if (limit) {
-      query = query.limit(parseInt(limit as string, 10));
-    }
+    // Pagination
+    const pageSize = limit ? parseInt(limit as string, 10) : 10; // Default to 10 items per page if limit not specified
+    const currentPage = parseInt(page as string, 10);
+    const skip = (currentPage - 1) * pageSize;
+
+    query = query.skip(skip).limit(pageSize);
 
     // Execute the query
     const events = await query.exec();
 
-    res.status(200).json(events);
+    // Calculate total pages
+    const totalPages = Math.ceil(totalEvents / pageSize);
+
+    res.status(200).json({
+      events,
+      pagination: {
+        totalEvents,
+        totalPages,
+        currentPage,
+        pageSize,
+        hasNextPage: currentPage < totalPages,
+        hasPreviousPage: currentPage > 1,
+      },
+    });
   } catch (error) {
     console.error('Error fetching events:', error);
     res.status(500).json({ message: 'Error fetching events', error: (error instanceof Error) ? error.message : 'Unknown error' });

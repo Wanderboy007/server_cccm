@@ -4,7 +4,7 @@ export interface IUser extends Document {
   name: string;
   email: string;
   password: string;
-  role: string; // Values: 'super_admin', 'admin', 'student', 'alumni' , 'event_manager' ,
+  role: string; // Values: 'super_admin', 'admin', 'student', 'alumni',
   year?: string;
   assigned_roles?: string[];
 }
