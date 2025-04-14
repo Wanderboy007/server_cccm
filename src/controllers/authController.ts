@@ -8,12 +8,13 @@ export const register = async (req: Request, res: Response) => {
   const { name, email, password, role, year } = req.body;
 
   try {
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      res.status(400).json({ message: 'User already exists' });
-      return;
-    }
+    // Check if user already exists\
+    console.log(email)
+    // const existingUser = await User.findOne({ email });
+    // if (existingUser) {
+    //   res.status(400).json({ message: 'User already exists' });
+    //   return;
+    // }
     
 
     if(role === 'super_admin' || role === 'admin') {
@@ -29,6 +30,7 @@ export const register = async (req: Request, res: Response) => {
     await user.save();
      res.status(201).json({ user });
   } catch (error) {
+    console.log(error)
      res.status(500).json({ message: 'Server error', error });
   }
 };
