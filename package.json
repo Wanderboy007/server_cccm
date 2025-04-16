@@ -4,10 +4,10 @@
   "description": "",
   "main": "dist/app.js",
   "scripts": {
+    "clean": "rd /s /q dist || mkdir dist",
     "start": "node dist/app.js",
     "dev": "nodemon --exec tsx src/app.ts",
-    "build": "tsc",
-    "clean": "rm -rf dist",
+    "build": "rd /s /q dist & tsc & xcopy src\\public dist\\public /E /I",
     "test": "NODE_OPTIONS='--experimental-vm-modules' jest"
   },
   "keywords": [],

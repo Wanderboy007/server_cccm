@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import User from '../models/User.model';
-import { hashPassword, comparePassword } from '../utils/auth'; 
-import { generateToken } from '../utils/jwt';
+import User from '../models/User.model.js';
+import { hashPassword, comparePassword } from '../utils/auth.js'; 
+import { generateToken } from '../utils/jwt.js';
 
 
 

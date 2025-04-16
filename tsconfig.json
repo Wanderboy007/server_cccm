@@ -1,27 +1,38 @@
+// {
+//   "compilerOptions": {
+//     "target": "ES2022",
+//     "module": "ESNext", // Use ESM (or "CommonJS" if needed)
+//     "moduleResolution": "node",
+//     "outDir": "./dist", // Output directory for compiled files
+//     "rootDir": "./src", // Source directory
+//     "strict": true,
+//     "esModuleInterop": true,
+//     "skipLibCheck": true,
+//     "forceConsistentCasingInFileNames": true,
+//     "allowJs": true,
+//     "checkJs": true,
+//     "resolveJsonModule": true,
+//     "isolatedModules": true, // Required for ts-jest
+//     "noEmitOnError": true,
+//     "removeComments": true,
+//     "sourceMap": true,
+//     "inlineSources": true,
+//     "noUnusedLocals": true,
+//     "noUnusedParameters": true,
+//     "noImplicitReturns": true,
+//     "noFallthroughCasesInSwitch": true
+//   },
+//   "include": ["src/**/*", "__tests__/**/*"], // Include all files in src and __tests__
+//   "exclude": ["node_modules", "dist", "**/*.test.ts"] // Exclude unnecessary files
+// }
+
 {
   "compilerOptions": {
+    "module": "NodeNext", // or "CommonJS" if not using ESM
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "moduleResolution": "NodeNext",
     "target": "ES2022",
-    "module": "ESNext", // Use ESM (or "CommonJS" if needed)
-    "moduleResolution": "node",
-    "outDir": "./dist", // Output directory for compiled files
-    "rootDir": "./src", // Source directory
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "allowJs": true,
-    "checkJs": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true, // Required for ts-jest
-    "noEmitOnError": true,
-    "removeComments": true,
-    "sourceMap": true,
-    "inlineSources": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
-  },
-  "include": ["src/**/*", "__tests__/**/*"], // Include all files in src and __tests__
-  "exclude": ["node_modules", "dist", "**/*.test.ts"] // Exclude unnecessary files
+    "esModuleInterop": true
+  }
 }

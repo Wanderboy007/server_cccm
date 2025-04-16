@@ -1,5 +1,5 @@
 import express from 'express';
-import { requireRoles } from '../middleware/role.middleware';
+import { requireRoles } from '../middleware/role.middleware.js';
 import {
   createEvent,
   updateEvent,
@@ -13,8 +13,8 @@ import {
   myCreatedEvents,
   myRegisteredEvents,
   getScrapbook
-} from '../controllers/event.controller';
-import { protect} from '../middleware/authMiddleware';
+} from '../controllers/event.controller.js';
+import { protect} from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 

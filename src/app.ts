@@ -1,8 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import connectDB from './utils/db';
-import authRoutes from './routes/auth.route'; 
-import eventRoute from './routes/event.route'
+import connectDB from './utils/db.js';
+import authRoutes from './routes/auth.route.js'; 
+import eventRoute from './routes/event.route.js'
 import cookieParser from 'cookie-parser';
 
 

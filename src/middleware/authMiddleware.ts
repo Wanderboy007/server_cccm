@@ -1,7 +1,7 @@
 
 import { Request, Response, NextFunction } from 'express';
-import { verifyToken } from '../utils/jwt';
-import User from '../models/User.model'; 
+import { verifyToken } from '../utils/jwt.js';
+import User from '../models/User.model.js'; 
 
 
 declare global {

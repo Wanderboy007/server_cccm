@@ -1,6 +1,6 @@
 // middlewares/role.middleware.ts
 import { Request, Response, NextFunction , RequestHandler } from 'express';
-import { IUser } from '../models/User.model';
+import { IUser } from '../models/User.model.js';
 
 export const requireRoles = (...allowedRoles: string[]):RequestHandler => {
   return (req: Request, res: Response, next: NextFunction): void  => {

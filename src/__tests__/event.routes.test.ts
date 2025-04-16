@@ -1,7 +1,7 @@
 import request from 'supertest';
-import { app } from '../src/app';
-import Event from '../src/models/Event.model';
-import User from '../src/models/User.model';
+import { app } from '../app.js';
+import Event from '../models/Event.model.js';
+import User from '../models/User.model.js';
 import mongoose from 'mongoose';
 
 describe('Event Routes', () => {

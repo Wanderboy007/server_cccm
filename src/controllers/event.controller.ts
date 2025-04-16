@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Event from '../models/Event.model';
+import Event from '../models/Event.model.js';
 import mongoose, { Types } from 'mongoose';
 
 // ==========================

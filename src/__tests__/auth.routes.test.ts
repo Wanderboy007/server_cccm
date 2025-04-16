@@ -1,6 +1,6 @@
 import request from 'supertest';
-import {app} from '../src/app';
-import User from '../src/models/User.model';
+import {app} from '../app.js';
+import User from '../models/User.model.js';
 import mongoose from 'mongoose';
 
 describe('Auth Routes', () => {
