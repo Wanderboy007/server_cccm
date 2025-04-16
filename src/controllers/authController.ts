@@ -90,7 +90,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
   try {
     // Check if user exists
-    const user = await User.findOne({ email }) as { _id: string, password: string };
+    console.log(email)
+    const user = await User.findOne({ email });
+    console.log(user)
     if (!user) {
       res.status(400).json({ message: 'Invalid credentials' });
       return;
@@ -112,9 +114,10 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       maxAge: 24 * 60 * 60 * 1000, // 1 day expiration
     });
 
-    // Respond with user data (optional, you can decide what to send back)
-    res.status(200).json({ message: 'Login successful', user });
+    const userObj = user.toObject(); // works if user is a Mongoose document
+    delete userObj.password;
 
+res.status(200).json({ message: 'Login successful', user: userObj });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Server error', error });
