@@ -4,6 +4,7 @@ import { hashPassword, comparePassword } from '../utils/auth';
 import { generateToken } from '../utils/jwt';
 
 
+
 export const register = async (req: Request, res: Response) => {
   const { name, email, password, role, year } = req.body;
 

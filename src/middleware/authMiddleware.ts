@@ -71,29 +71,40 @@ export const authenticateAndAuthorizeAdmin = async (req: Request, res: Response,
 
 export const protect = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   let token;
+   console.log("hu")
+  // 🔍 First, try getting token from Authorization header
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    try {
-      token = req.headers.authorization.split(' ')[1];
-      // console.log(token)
-      const decoded = verifyToken(token);
-      // console.log(decoded)
-      const user = await User.findById(decoded.userId).select('_id role') as { _id: string; role: string } | null;
-      console.log(user)
-
-      if (!user) {
-        res.status(401).json({ message: 'User not found' });
-        return;
-      }
-      req.user = {
-        userId: user._id.toString(),
-        role: user.role,
-      };
-      next();
-    } catch (error) {
-      res.status(401).json({ message: 'Not authorized, token failed' });
-    }
-  } else {
-    res.status(401).json({ message: 'No token, authorization denied' });
+    token = req.headers.authorization.split(' ')[1];
+    console.log("auth")
   }
-}; 
+  
+  console.log()
+  // 🍪 If not in header, try from cookies
+  if (!token && req.cookies!.authToken) {
+    token = req.cookies.authToken;
+  }
 
+  if (!token) {
+    res.status(401).json({ message: 'No token, authorization denied' });
+    return;
+  }
+
+  try {
+    const decoded = verifyToken(token);
+    const user = await User.findById(decoded.userId).select('_id role') as { _id: string; role: string } | null;
+
+    if (!user) {
+      res.status(401).json({ message: 'User not found' });
+      return;
+    }
+
+    req.user = {
+      userId: user._id.toString(),
+      role: user.role,
+    };
+
+    next();
+  } catch (error) {
+    res.status(401).json({ message: 'Not authorized, token failed' });
+  }
+};

@@ -3,6 +3,9 @@ import dotenv from 'dotenv';
 import connectDB from './utils/db';
 import authRoutes from './routes/auth.route'; 
 import eventRoute from './routes/event.route'
+import cookieParser from 'cookie-parser';
+
+
 import cors from 'cors';
 
 // const PORT = process.env.TEST_PORT || 5000;
@@ -12,10 +15,11 @@ dotenv.config();
 
 const app = express();
 
+app.use(cookieParser());
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: 'http://localhost:3000', // your frontend domain
   credentials: true,
 }));
 
