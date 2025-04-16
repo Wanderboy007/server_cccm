@@ -247,3 +247,52 @@ export const getEventRegistrations = async (req: Request, res: Response):Promise
     res.status(500).json({ message: 'Error fetching event registrations', error });
   }
 };
+
+// ==========================
+// 📊 Update images array in events
+// ==========================
+
+// Add this new controller function
+export const addEventImages = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { images }: { images: string[] } = req.body;
+
+    if (!images || !Array.isArray(images)) {
+       res.status(400).json({
+        success: false,
+        message: 'Invalid images data'
+      });
+      return;
+    }
+
+    const updatedEvent = await Event.findByIdAndUpdate(
+      id,
+      { $push: { eventimages: { $each: images } } },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedEvent) {
+      res.status(404).json({
+        success: false,
+        message: 'Event not found'
+      });
+      return;
+    }
+
+      res.status(200).json({
+      success: true,
+      data: updatedEvent
+    });
+    
+
+  } catch (error: unknown) {
+    const err = error as Error;
+     res.status(500).json({
+      success: false,
+      message: 'Failed to add images',
+      error: err.message
+    });
+    return;
+  }
+};

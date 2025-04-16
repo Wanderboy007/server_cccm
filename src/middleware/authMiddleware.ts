@@ -71,19 +71,19 @@ export const authenticateAndAuthorizeAdmin = async (req: Request, res: Response,
 
 export const protect = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   let token;
-   console.log("hu")
+
   // 🔍 First, try getting token from Authorization header
+  console.log(req.headers.authorization);
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];
-    console.log("auth")
   }
   
-  console.log()
   // 🍪 If not in header, try from cookies
   if (!token && req.cookies!.authToken) {
     token = req.cookies.authToken;
   }
 
+  // console.log("no token" + token)
   if (!token) {
     res.status(401).json({ message: 'No token, authorization denied' });
     return;
@@ -91,7 +91,9 @@ export const protect = async (req: Request, res: Response, next: NextFunction): 
 
   try {
     const decoded = verifyToken(token);
+    console.log(decoded)
     const user = await User.findById(decoded.userId).select('_id role') as { _id: string; role: string } | null;
+    // console.log(user);
 
     if (!user) {
       res.status(401).json({ message: 'User not found' });

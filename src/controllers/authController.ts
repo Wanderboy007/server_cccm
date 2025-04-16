@@ -9,15 +9,7 @@ export const register = async (req: Request, res: Response) => {
   const { name, email, password, role, year } = req.body;
 
   try {
-    // Check if user already exists\
     console.log(email)
-    // const existingUser = await User.findOne({ email });
-    // if (existingUser) {
-    //   res.status(400).json({ message: 'User already exists' });
-    //   return;
-    // }
-    
-
     if(role === 'super_admin' || role === 'admin') {
       res.status(400).json({ message: 'Invalid role for this route' });
       return;
@@ -90,8 +82,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
   try {
     // Check if user exists
-    console.log(email)
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }) as { _id: string, password: string, toObject: () => any } | null;
     console.log(user)
     if (!user) {
       res.status(400).json({ message: 'Invalid credentials' });

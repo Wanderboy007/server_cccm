@@ -8,7 +8,8 @@ import {
   getEventById,
   registerForEvent,
   unregisterFromEvent,
-  getEventRegistrations
+  getEventRegistrations,
+  addEventImages
 } from '../controllers/event.controller';
 import { protect} from '../middleware/authMiddleware';
 
@@ -30,6 +31,8 @@ router.get('/', listEvents); // List all events
 router.get('/:id', getEventById); // Get event details
 router.post('/:id/register',protect,requireRoles('student', 'alumni'), registerForEvent); // Register for event
 router.post('/:id/unregister', protect,requireRoles('student', 'alumni'), unregisterFromEvent); // Unregister from event
-router.get('/:id/registrations', protect, requireRoles('student', 'alumni'), getEventRegistrations); // Get registered users
+router.get('/:id/registrations', protect, requireRoles('student', 'alumni'), getEventRegistrations);
+router.patch('/:id/images', protect, requireRoles('admin','super_admin', 'event_manager'), addEventImages);
+//Get registered users
 
 export default router;
