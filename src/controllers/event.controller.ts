@@ -296,3 +296,84 @@ export const addEventImages = async (req: Request, res: Response): Promise<void>
     return;
   }
 };
+
+
+export const myCreatedEvents = async (req: Request, res: Response) : Promise<void> => {
+  try {
+    const userId = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      res.status(400).json({ message: 'Invalid user ID format' });
+      return;
+    }
+
+    const events = await Event.find({ organizer: userId }).sort({ date: -1 });
+
+    res.status(200).json(events);
+  } catch (error) {
+    console.error('Error fetching created events:', error);
+    res.status(500).json({ message: 'Failed to fetch created events' });
+  }
+};
+
+export const myRegisteredEvents = async (req: Request, res: Response):Promise<void> => {
+  try {
+    const userId = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+       res.status(400).json({ message: 'Invalid user ID format' });
+       return;
+    }
+
+    const events = await Event.find({ registeredUsers: userId }).sort({ date: -1 });
+
+    res.status(200).json(events);
+  } catch (error) {
+    console.error('Error fetching registered events:', error);
+    res.status(500).json({ message: 'Failed to fetch registered events' });
+  }
+}; 
+
+export const getScrapbook = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = req.params.id;
+
+    // Validate user ID
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      res.status(400).json({ message: 'Invalid user ID format' });
+      return;
+    }
+
+    // Fetch events where user is registered, sorted by date (newest first)
+    const events = await Event.find({ registeredUsers: userId })
+      .sort({ date: -1 })
+      .populate('organizer', 'name email') // Optional: include organizer info
+      .exec();
+
+    // Transform events into scrapbook format
+    const scrapbook = events.map(event => ({
+      eventId: event._id,
+      title: event.title,
+      date: event.date,
+      description: event.description,
+      location: event.location,
+      thumbnail: event.thumbnail, // Main event thumbnail
+      images: event.eventimages || [], // Array of event images
+      organizer: event.organizer, // Optional: organizer info
+      category: event.category
+    }));
+
+    res.status(200).json({
+      success: true,
+      count: scrapbook.length,
+      scrapbook
+    });
+
+  } catch (error) {
+    console.error('Error fetching scrapbook:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Failed to fetch scrapbook data' 
+    });
+  }
+};

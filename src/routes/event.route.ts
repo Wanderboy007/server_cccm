@@ -9,7 +9,10 @@ import {
   registerForEvent,
   unregisterFromEvent,
   getEventRegistrations,
-  addEventImages
+  addEventImages,
+  myCreatedEvents,
+  myRegisteredEvents,
+  getScrapbook
 } from '../controllers/event.controller';
 import { protect} from '../middleware/authMiddleware';
 
@@ -34,5 +37,10 @@ router.post('/:id/unregister', protect,requireRoles('student', 'alumni'), unregi
 router.get('/:id/registrations', protect, requireRoles('student', 'alumni'), getEventRegistrations);
 router.patch('/:id/images', protect, requireRoles('admin','super_admin', 'event_manager'), addEventImages);
 //Get registered users
+
+router.get('/:id/mycreatedevents', protect, requireRoles('admin','super_admin', 'event_manager'), myCreatedEvents);
+router.get('/:id/myregisteredevents', protect, requireRoles('student', 'alumni'), myRegisteredEvents);
+
+router.get('/:id/getscrapbook', protect, requireRoles('student', 'alumni'), getScrapbook);
 
 export default router;
