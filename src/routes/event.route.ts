@@ -15,6 +15,7 @@ import {
   getScrapbook
 } from '../controllers/event.controller.js';
 import { protect} from '../middleware/authMiddleware.js';
+import { getUser } from '../controllers/authController.js';
 
 const router = express.Router();
 
@@ -42,5 +43,8 @@ router.get('/:id/mycreatedevents', protect, requireRoles('admin','super_admin', 
 router.get('/:id/myregisteredevents', protect, requireRoles('student', 'alumni'), myRegisteredEvents);
 
 router.get('/:id/getscrapbook', protect, requireRoles('student', 'alumni'), getScrapbook);
+
+router.get('/:id/getuser',getUser);
+
 
 export default router;
