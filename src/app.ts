@@ -4,9 +4,9 @@ import connectDB from './utils/db.js';
 import authRoutes from './routes/auth.route.js'; 
 import eventRoute from './routes/event.route.js'
 import cookieParser from 'cookie-parser';
-
-
 import cors from 'cors';
+
+
 
 // const PORT = process.env.TEST_PORT || 5000;
 
@@ -21,12 +21,15 @@ app.use(cors({
   origin: true, // Reflects the request origin
   credentials: true // Required for cookies/auth
 }));
+app.use(express.json());
+app.use(cookieParser());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/event',eventRoute)
 
 // Connect to MongoDB
 // connectDB(); 
+
 
 export {app};
 

@@ -74,12 +74,8 @@ export const registerAdmin = async (req: Request, res: Response) : Promise<void>
 
 
 
-
-
-
 export const login = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
-
   try {
     // Check if user exists
     const user = await User.findOne({ email }) as { _id: string, password: string, toObject: () => any } | null;
