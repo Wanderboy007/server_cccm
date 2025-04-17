@@ -19,7 +19,7 @@ app.use(cookieParser());
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: 'http://localhost:3000', // your frontend domain
+  origin: process.env.CROS || 'https://server-cccm.onrender.com', // your frontend domain
   credentials: true,
 }));
 
