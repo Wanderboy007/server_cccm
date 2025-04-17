@@ -18,10 +18,9 @@ const app = express();
 console.log(process.env.CORS_ORIGIN)
 
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
-  credentials: true
+  origin: true, // Reflects the request origin
+  credentials: true // Required for cookies/auth
 }));
-
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/event',eventRoute)
