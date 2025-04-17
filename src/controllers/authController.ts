@@ -98,6 +98,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     // Set cookie with the token
     res.cookie('authToken', token, {
       httpOnly: true,         // Makes the cookie inaccessible to JavaScript (important for security)
+      secure: process.env.NODE_ENV === 'production', // Required for cross-site cookies
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       maxAge: 24 * 60 * 60 * 1000, // 1 day expiration
     });
 
