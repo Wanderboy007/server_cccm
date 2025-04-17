@@ -15,13 +15,24 @@ dotenv.config();
 
 const app = express();
 
-app.use(cookieParser());
-// Middleware
-app.use(express.json());
-app.use(cors({
-  origin: process.env.CROS || 'https://server-cccm.onrender.com', // your frontend domain
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || [
+      'http://localhost:3000', // Local development
+      'https://your-frontend-app.onrender.com', // Production frontend
+      'https://server-cccm.onrender.com' // Your backend (if needed)
+    ],
+    credentials: true, // Required for cookies/sessions
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Requested-With',
+      'Set-Cookie'
+    ],
+    exposedHeaders: ['Set-Cookie'], // Required for cookies
+  })
+);
 
 // Routes
 app.use('/api/auth', authRoutes);
