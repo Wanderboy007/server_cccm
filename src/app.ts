@@ -19,6 +19,8 @@ console.log(process.env.CORS_ORIGIN)
 
 app.use(cors({
   origin: ["https://client-o8aw.vercel.app"], // Reflects the request origin
+  // origin: ["http://localhost:5000"], // Reflects the request origin
+  // origin: true, 
   credentials: true // Required for cookies/auth
 }));
 app.use(express.json());
